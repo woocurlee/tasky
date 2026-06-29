@@ -6,6 +6,7 @@ import { DataProvider } from "@/lib/data/store";
 import ThemeSwitcher from "@/components/ThemeSwitcher";
 import PrivacyToggle from "@/components/PrivacyToggle";
 import { prisma } from "@/lib/prisma";
+import { logout } from "@/app/login/actions";
 
 // DB를 매 요청 시 읽으므로 동적 렌더링
 export const dynamic = "force-dynamic";
@@ -33,6 +34,15 @@ export default async function Home() {
             <div className="flex items-center gap-2 sm:gap-3">
               <PrivacyToggle />
               <ThemeSwitcher />
+              <form action={logout}>
+                <button
+                  type="submit"
+                  title="로그아웃"
+                  className="rounded-md border border-zinc-200 px-2 py-1 text-xs text-zinc-500 transition hover:bg-zinc-100 active:scale-95 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-800"
+                >
+                  로그아웃
+                </button>
+              </form>
             </div>
           </header>
 

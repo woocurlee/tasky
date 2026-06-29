@@ -47,3 +47,6 @@ next-env.d.ts
 /prisma/*.db-journal
 /dev.db
 /dev.db-journal
+
+# 예시 env는 커밋 (실제 .env는 위에서 무시)
+!.env.example

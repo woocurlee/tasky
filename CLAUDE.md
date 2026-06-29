@@ -117,6 +117,9 @@
       - [x] hover 커서: 전역 base 규칙으로 button/role=button에 `cursor: pointer`,
             드래그 핸들은 `cursor-grab`.
       - 인터랙션 강화 작업 일단락 (필요 시 추가 다듬기).
-- [ ] **로그인** — 환경변수 하드코딩 + 라우트 가드. (사용자 요청으로 뒤로 미룸)
-      비공개 카테고리 완전 차단(서버측 필터링)도 이때 함께 검토.
+- [x] **로그인** — 완료. 환경변수(`AUTH_USERNAME`/`AUTH_PASSWORD`/`AUTH_SECRET`),
+      `/login` + 서버 액션(`src/app/login/actions.ts`)으로 httpOnly 쿠키 세션,
+      `src/middleware.ts`로 전 경로(+API) 보호. 헤더에 로그아웃. `.env.example` 추가.
+      쿠키 `secure:false`(http 배포 고려) — HTTPS 적용 시 true로 바꿀 것.
+      ※ 비공개 카테고리 완전 차단(서버측 필터링)은 아직 미적용 — 추후 과제로 남김.
 - [x] **DB (2단계)** — Prisma 7 + SQLite 완료 (위 '개발 단계' 참고).
