@@ -3,13 +3,44 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  /* 액센트 (기본: 인디고). data-accent 속성으로 테마 전환 */
+  --accent: #4f46e5;
+  --accent-foreground: #ffffff;
+}
+
+/* 선택 가능한 액센트 테마들 — <html data-accent="..."> 로 적용 */
+[data-accent="violet"] {
+  --accent: #7c3aed;
+}
+[data-accent="emerald"] {
+  --accent: #059669;
+}
+[data-accent="blue"] {
+  --accent: #2563eb;
+}
+[data-accent="rose"] {
+  --accent: #e11d48;
+}
+[data-accent="amber"] {
+  --accent: #d97706;
+}
+[data-accent="mono"] {
+  --accent: #18181b;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* 모션: 은은하고 빠릿하게 */
+  --animate-fade-in: fade-in 0.16s ease-out;
+  --animate-fade-out: fade-out 0.16s ease-in forwards;
+  --animate-check-pop: check-pop 0.2s ease-out;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -17,10 +48,80 @@
     --background: #0a0a0a;
     --foreground: #ededed;
   }
+  [data-accent="mono"] {
+    --accent: #fafafa;
+    --accent-foreground: #18181b;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fade-out {
+  to {
+    opacity: 0;
+    transform: translateX(8px) scale(0.97);
+  }
+}
+
+@keyframes check-pop {
+  0% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.18);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* 화면이 커질수록 루트 폰트(rem)를 조금씩 키워 글자/여백을 함께 확대 */
+html {
+  font-size: 16px;
+}
+@media (min-width: 1024px) {
+  html {
+    font-size: 17px;
+  }
+}
+@media (min-width: 1536px) {
+  html {
+    font-size: 18px;
+  }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+}
+
+/* 클릭 가능한 요소엔 손가락 커서 (드래그 핸들의 cursor-grab 유틸이 우선) */
+@layer base {
+  button:not(:disabled),
+  label,
+  [role="button"] {
+    cursor: pointer;
+  }
+}
+
+/* 모션 최소화 선호 사용자 존중 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

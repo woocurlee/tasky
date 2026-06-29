@@ -1,0 +1,29 @@
+// Tasky 데이터 모델 (Prisma 7 + SQLite)
+// url은 prisma.config.ts에서 env DATABASE_URL로 주입됨
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Category {
+  id      String  @id
+  name    String
+  private Boolean @default(false)
+  todos   Todo[]
+}
+
+model Todo {
+  id         String    @id
+  title      String
+  done       Boolean   @default(false)
+  date       String? // Daily 할일: YYYY-MM-DD (주간이면 null)
+  weekStart  String? // 주간 할일: 그 주 월요일 YYYY-MM-DD (Daily면 null)
+  order      Int       @default(0)
+  categoryId String?
+  category   Category? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+}
