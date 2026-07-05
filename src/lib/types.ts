@@ -21,3 +21,16 @@ export interface Todo {
   /** 같은 리스트(날짜+카테고리 또는 주) 안에서의 정렬 순서 (오름차순) */
   order: number;
 }
+
+export type TxType = "income" | "expense";
+
+/** 가계부 거래 */
+export interface Transaction {
+  id: string;
+  date: string; // YYYY-MM-DD
+  type: TxType;
+  amount: number; // 원 단위 (양수)
+  category: string;
+  memo: string | null;
+  createdAt: string; // ISO
+}

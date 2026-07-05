@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { SESSION_COOKIE } from "@/lib/auth";
 
-export function middleware(req: NextRequest) {
+// Next 16의 proxy (구 middleware) — 인증 라우트 가드
+export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   const secret = process.env.AUTH_SECRET;

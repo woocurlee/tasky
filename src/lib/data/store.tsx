@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, type ReactNode } from "react";
 import type { Category, Todo } from "@/lib/types";
+import { send, uid } from "@/lib/api";
 
 /**
  * 데이터 접근 레이어 (2단계: API + Prisma/SQLite).
@@ -30,25 +31,6 @@ interface DataStore {
 }
 
 const DataContext = createContext<DataStore | null>(null);
-
-const uid = () =>
-  typeof crypto !== "undefined" && crypto.randomUUID
-    ? crypto.randomUUID()
-    : String(Date.now() + Math.random());
-
-// fire-and-forget API 호출 (실패 시 콘솔 로깅)
-async function send(url: string, method: string, body?: unknown) {
-  try {
-    const res = await fetch(url, {
-      method,
-      headers: body ? { "Content-Type": "application/json" } : undefined,
-      body: body ? JSON.stringify(body) : undefined,
-    });
-    if (!res.ok) console.error(`API 실패: ${method} ${url} → ${res.status}`);
-  } catch (e) {
-    console.error(`API 오류: ${method} ${url}`, e);
-  }
-}
 
 export function DataProvider({
   initialCategories,

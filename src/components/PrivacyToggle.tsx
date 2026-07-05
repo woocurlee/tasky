@@ -5,9 +5,12 @@ import { useData } from "@/lib/data/store";
 
 // 헤더의 '비공개 보기' 토글. 기본은 숨김(revealPrivate=false), 누르면 세션 동안만 표시.
 export default function PrivacyToggle() {
-  const { revealPrivate, toggleRevealPrivate } = useApp();
+  const { revealPrivate, toggleRevealPrivate, mode } = useApp();
   const { categories } = useData();
   const privateCount = categories.filter((c) => c.private).length;
+
+  // 비공개는 할일(카테고리) 전용 — 가계부 모드에선 숨김
+  if (mode === "ledger") return null;
 
   return (
     <button

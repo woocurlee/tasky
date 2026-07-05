@@ -77,11 +77,21 @@
 - 추가 / 완료 체크 / 삭제.
 - 현재 주(週) 표시(예: 6/23 ~ 6/29).
 
-## 데이터 모델 (2단계 Prisma 기준, 1단계 TS 타입도 동일 구조로)
+## 데이터 모델 (Prisma + SQLite)
 - **Category**: id, name, **private**(비공개 여부)
 - **Todo**: id, title, done, date(daily용), weekStart(주간용), categoryId(nullable), **order**(정렬)
-  - daily 할일 = date + category로 구분
-  - 주간 할일 = weekStart로 구분
+  - daily 할일 = date + category로 구분 / 주간 할일 = weekStart로 구분
+- **Transaction**(가계부): id, date, type("income"|"expense"), amount(원, Int), category, memo?, createdAt
+
+## 화면 모드: 할일(tasky) / 가계부(ledger)
+- 헤더 `ModeToggle`로 전환. 모드는 **쿠키(`tasky_mode`)**로 유지 → `page.tsx`가 SSR 시 읽어
+  깜빡임 없이 올바른 화면 렌더. 컨텍스트는 `AppContext.mode`.
+- 4사분면 중 **캘린더(2사분면)는 공용**, 우상/하단만 교체(`src/components/Dashboard.tsx`):
+  - tasky: DailyPanel + WeeklyPanel
+  - ledger: LedgerDailyPanel(그날 거래 입력/목록) + LedgerSummaryPanel(월 수입·지출·잔액 + 카테고리별 지출)
+- 가계부 데이터 레이어: `src/lib/ledger/store.tsx`(`useLedger`), API `src/app/api/transactions[/id]`.
+- 공용 API 헬퍼: `src/lib/api.ts`(`send`, `uid`). 금액 포맷: `src/lib/money.ts`.
+- 비공개 토글(PrivacyToggle)은 가계부 모드에선 숨김.
 
 ## 비공개(프라이버시) 모드
 - 카테고리 단위로 `private` 표시(이름까지 통째로 숨김). 회사 등에서 민감한 항목(예: 이직 준비) 가림.
@@ -119,7 +129,7 @@
       - 인터랙션 강화 작업 일단락 (필요 시 추가 다듬기).
 - [x] **로그인** — 완료. 환경변수(`AUTH_USERNAME`/`AUTH_PASSWORD`/`AUTH_SECRET`),
       `/login` + 서버 액션(`src/app/login/actions.ts`)으로 httpOnly 쿠키 세션,
-      `src/middleware.ts`로 전 경로(+API) 보호. 헤더에 로그아웃. `.env.example` 추가.
+      `src/proxy.ts`(Next 16, 구 middleware)로 전 경로(+API) 보호. 헤더에 로그아웃. `.env.example` 추가.
       쿠키 `secure:false`(http 배포 고려) — HTTPS 적용 시 true로 바꿀 것.
       ※ 비공개 카테고리 완전 차단(서버측 필터링)은 아직 미적용 — 추후 과제로 남김.
 - [x] **DB (2단계)** — Prisma 7 + SQLite 완료 (위 '개발 단계' 참고).

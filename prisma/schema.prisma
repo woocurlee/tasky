@@ -27,3 +27,14 @@ model Todo {
   categoryId String?
   category   Category? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 }
+
+// 가계부 거래 내역
+model Transaction {
+  id        String   @id
+  date      String // YYYY-MM-DD
+  type      String // "income" | "expense"
+  amount    Int // 원 단위 (양수)
+  category  String
+  memo      String?
+  createdAt DateTime @default(now())
+}
