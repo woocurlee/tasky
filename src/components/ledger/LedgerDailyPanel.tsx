@@ -5,7 +5,7 @@ import Panel from "@/components/Panel";
 import { useApp } from "@/lib/context";
 import { useLedger } from "@/lib/ledger/store";
 import { parseISODate, WEEKDAY_LABELS } from "@/lib/date";
-import { formatWonUnit } from "@/lib/money";
+import { formatWon, formatWonUnit } from "@/lib/money";
 import type { Transaction } from "@/lib/types";
 
 const CATEGORY_PRESETS = ["식비", "교통", "생활", "쇼핑", "문화", "의료", "고정비", "기타"];
@@ -84,7 +84,7 @@ function AddTransactionForm({ date }: { date: string }) {
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    const value = parseInt(amount.replace(/[^0-9]/g, ""), 10);
+    const value = parseInt(amount, 10); // amount는 숫자만 저장됨
     if (!value || value <= 0 || !category.trim()) return;
     addTransaction({ date, amount: value, category, memo });
     setAmount("");
@@ -99,8 +99,8 @@ function AddTransactionForm({ date }: { date: string }) {
     >
       <div className="flex gap-1.5">
         <input
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
+          value={amount ? formatWon(Number(amount)) : ""}
+          onChange={(e) => setAmount(e.target.value.replace(/[^0-9]/g, ""))}
           inputMode="numeric"
           placeholder="금액"
           className="min-w-0 flex-1 rounded-md border border-zinc-200 px-2.5 py-1.5 text-sm tabular-nums focus:border-accent focus:outline-none dark:border-zinc-700 dark:bg-zinc-900"
