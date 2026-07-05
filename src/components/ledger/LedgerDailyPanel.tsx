@@ -97,26 +97,34 @@ function AddTransactionForm({ date }: { date: string }) {
       onSubmit={submit}
       className="flex flex-col gap-2 rounded-lg border border-zinc-200 p-2.5 dark:border-zinc-800"
     >
-      <div className="flex gap-1.5">
-        <input
-          value={amount ? formatWon(Number(amount)) : ""}
-          onChange={(e) => setAmount(e.target.value.replace(/[^0-9]/g, ""))}
-          inputMode="numeric"
-          placeholder="금액"
-          className="min-w-0 flex-1 rounded-md border border-zinc-200 px-2.5 py-1.5 text-sm tabular-nums focus:border-accent focus:outline-none dark:border-zinc-700 dark:bg-zinc-900"
-        />
-        <input
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          list="tx-categories"
-          placeholder="카테고리"
-          className="min-w-0 flex-1 rounded-md border border-zinc-200 px-2.5 py-1.5 text-sm focus:border-accent focus:outline-none dark:border-zinc-700 dark:bg-zinc-900"
-        />
-        <datalist id="tx-categories">
-          {CATEGORY_PRESETS.map((c) => (
-            <option key={c} value={c} />
-          ))}
-        </datalist>
+      <input
+        value={amount ? formatWon(Number(amount)) : ""}
+        onChange={(e) => setAmount(e.target.value.replace(/[^0-9]/g, ""))}
+        inputMode="numeric"
+        placeholder="금액"
+        className="w-full rounded-md border border-zinc-200 px-2.5 py-1.5 text-sm tabular-nums focus:border-accent focus:outline-none dark:border-zinc-700 dark:bg-zinc-900"
+      />
+
+      {/* 카테고리 프리셋 칩 (탭 선택) */}
+      <div className="flex flex-wrap gap-1.5">
+        {CATEGORY_PRESETS.map((c) => {
+          const selected = category === c;
+          return (
+            <button
+              key={c}
+              type="button"
+              onClick={() => setCategory(selected ? "" : c)}
+              aria-pressed={selected}
+              className={`rounded-full border px-2.5 py-1 text-xs font-medium transition active:scale-95 ${
+                selected
+                  ? "border-accent bg-accent text-accent-foreground"
+                  : "border-zinc-200 text-zinc-600 hover:border-accent/50 hover:text-accent dark:border-zinc-700 dark:text-zinc-300"
+              }`}
+            >
+              {c}
+            </button>
+          );
+        })}
       </div>
 
       <div className="flex gap-1.5">
@@ -128,7 +136,8 @@ function AddTransactionForm({ date }: { date: string }) {
         />
         <button
           type="submit"
-          className="shrink-0 rounded-md bg-accent px-4 text-sm font-semibold text-accent-foreground transition hover:opacity-90 active:scale-95"
+          disabled={!amount || !category}
+          className="shrink-0 rounded-md bg-accent px-4 text-sm font-semibold text-accent-foreground transition hover:opacity-90 active:scale-95 disabled:opacity-40"
         >
           추가
         </button>
