@@ -9,9 +9,3 @@ export function formatWon(amount: number): string {
 export function formatWonUnit(amount: number): string {
   return `${formatWon(amount)}원`;
 }
-
-/** 부호 포함: 수입 +, 지출 - */
-export function formatSigned(amount: number, type: "income" | "expense"): string {
-  const sign = type === "income" ? "+" : "-";
-  return `${sign}${formatWonUnit(amount)}`;
-}

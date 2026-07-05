@@ -81,14 +81,15 @@
 - **Category**: id, name, **private**(비공개 여부)
 - **Todo**: id, title, done, date(daily용), weekStart(주간용), categoryId(nullable), **order**(정렬)
   - daily 할일 = date + category로 구분 / 주간 할일 = weekStart로 구분
-- **Transaction**(가계부): id, date, type("income"|"expense"), amount(원, Int), category, memo?, createdAt
+- **Transaction**(가계부): id, date, type, amount(원, Int), category, memo?, createdAt
+  - ※ 현재 **지출만** 관리 → 앱은 항상 `type="expense"`로 저장 (수입 UI 제거됨). 컬럼은 유지.
 
 ## 화면 모드: 할일(tasky) / 가계부(ledger)
 - 헤더 `ModeToggle`로 전환. 모드는 **쿠키(`tasky_mode`)**로 유지 → `page.tsx`가 SSR 시 읽어
   깜빡임 없이 올바른 화면 렌더. 컨텍스트는 `AppContext.mode`.
 - 4사분면 중 **캘린더(2사분면)는 공용**, 우상/하단만 교체(`src/components/Dashboard.tsx`):
   - tasky: DailyPanel + WeeklyPanel
-  - ledger: LedgerDailyPanel(그날 거래 입력/목록) + LedgerSummaryPanel(월 수입·지출·잔액 + 카테고리별 지출)
+  - ledger: LedgerDailyPanel(그날 지출 입력/목록) + LedgerSummaryPanel(월 총 지출 + 카테고리별 지출)
 - 가계부 데이터 레이어: `src/lib/ledger/store.tsx`(`useLedger`), API `src/app/api/transactions[/id]`.
 - 공용 API 헬퍼: `src/lib/api.ts`(`send`, `uid`). 금액 포맷: `src/lib/money.ts`.
 - 비공개 토글(PrivacyToggle)은 가계부 모드에선 숨김.

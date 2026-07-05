@@ -1,12 +1,11 @@
 "use client";
 
 import { createContext, useContext, useState, type ReactNode } from "react";
-import type { Transaction, TxType } from "@/lib/types";
+import type { Transaction } from "@/lib/types";
 import { send, uid } from "@/lib/api";
 
 interface AddTxInput {
   date: string;
-  type: TxType;
   amount: number;
   category: string;
   memo?: string | null;
@@ -32,17 +31,26 @@ export function LedgerProvider({
   const store: LedgerStore = {
     transactions,
 
-    addTransaction: ({ date, type, amount, category, memo = null }) => {
+    addTransaction: ({ date, amount, category, memo = null }) => {
       const cat = category.trim();
       if (!date || !amount || amount <= 0 || !cat) return;
       const id = uid();
       const createdAt = new Date().toISOString();
-      const tx: Transaction = { id, date, type, amount, category: cat, memo: memo?.trim() || null, createdAt };
+      // 지출만 관리 (type은 항상 "expense")
+      const tx: Transaction = {
+        id,
+        date,
+        type: "expense",
+        amount,
+        category: cat,
+        memo: memo?.trim() || null,
+        createdAt,
+      };
       setTransactions((ts) => [...ts, tx]);
       send("/api/transactions", "POST", {
         id,
         date,
-        type,
+        type: "expense",
         amount,
         category: cat,
         memo: tx.memo,
